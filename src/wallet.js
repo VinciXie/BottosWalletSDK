@@ -1,5 +1,7 @@
 const BTCrypto = require('bottos-crypto-js');
 const keystore = BTCrypto.keystore
+const registerParam = require('./register.js')
+const transferParam = require('./transfer.js')
 
 /**
  * 
@@ -14,10 +16,21 @@ function Wallet(_requestManager) {
  * @param {string} account - account
  * @param {Object} keys - Public and private key pair
  * @param {string} referrer - referrer
+ * @returns {Promise}
  */
 Wallet.prototype.createAccount = function (account, keys, referrer) {
-  // console.log('this', this)
-  return this._requestManager.register(account, keys, referrer)
+  return this._requestManager.getBlockHeader()
+    .then((blockHeader) => {
+      // console.log('blockHeader', blockHeader)
+      let url = '/transaction/send'
+
+      let fetchTemplate = registerParam(account, keys, blockHeader, referrer)
+      console.log('fetchTemplate', fetchTemplate)
+      return this._requestManager.request(url, fetchTemplate).then(res => res.json())
+    })
+    .catch(err => {
+      console.error('register error: ', err)
+    })
 }
 
 /**
@@ -63,13 +76,27 @@ Wallet.prototype.recoverKeystore = keystore.recover.bind(keystore)
 
 // }
 
-Wallet.prototype.sendTransaction = function(param) {
-  // {
-  //   from: '',
-  //   to: '',
-  //   token_type,
-  //   price,
-  // }
+/**
+ * 
+ * @param {Object} params
+ * @param {string} params.from
+ * @param {string} params.to
+ * @param {string|number} params.value
+ */
+Wallet.prototype.sendTransaction = function (params, keys) {
+  // const contract = token_type === "BTO" ? "bottos" : "bottostoken",
+  return this._requestManager.getBlockHeader()
+    .then((blockHeader) => {
+      let url = '/transaction/send'
+
+      let fetchTemplate = transferParam(params, keys, blockHeader)
+      console.log('fetchTemplate', fetchTemplate)
+      return this._requestManager.request(url, fetchTemplate).then(res => res.json())
+    })
+    .catch(err => {
+      console.error('register error: ', err)
+    })
+
 }
 
 module.exports = Wallet

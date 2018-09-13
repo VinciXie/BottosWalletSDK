@@ -29,6 +29,10 @@ function test() {
   console.log('公私钥对 keys: ', keys)
 
   const account = 'adfa'
+
+  // sdk._requestManager.getAbi('bottos').then(res => {
+  //   console.log('bottos contract abi: ', res)
+  // })
   
   // const keystoreParam = {
   //   account: 'adfa',
@@ -42,6 +46,19 @@ function test() {
   // console.log('pk: ', pk)
 
   sdk.wallet.createAccount(account, keys)
+    .then(res => {
+      console.log('register res: ', res)
+      return res
+    })
+
+
+  // 转账测试
+  let params = {
+    from: 'aaa',
+    to: 'bbb',
+    value: '100',
+  }
+  sdk.wallet.sendTransaction(params, keys)
     .then(res => {
       console.log('register res: ', res)
       return res
