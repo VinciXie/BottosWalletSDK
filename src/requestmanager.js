@@ -1,24 +1,35 @@
 
 const Abi = require('../Abi.js')
 const registerParam = require('./register.js')
+const querystring = require('querystring')
 // console.log('Abi', Abi)
 
 function parseJSON(res) {
   return res.json()
 }
 
-function fetchFactory(url, params) {
+/**
+ * 
+ * @param {string} url 
+ * @param {Object} params 
+ * @param {string} method 
+ */
+function fetchFactory(url, params, method = 'POST') {
   console.log(' fetchFactory, url, params: ', url, params)
 
-  if (params == undefined) {
-    // simple request
+  if (method.toUpperCase() == 'GET') {
+    let paramStr = ''
+    if (params && typeof params == 'object') {
+      paramStr = '?' + querystring.stringify(params)
+    }
+    
     const CORSOptions = {
       method: 'GET',
       mode: 'cors',
     }
-    return fetch(this.prefix + url, CORSOptions)
+    return fetch(this.prefix + url + paramStr, CORSOptions)
   }
-  
+
   let __options = {
     method: 'POST',
     mode: 'cors',
@@ -49,10 +60,9 @@ RequestManager.prototype.request = fetchFactory
 RequestManager.prototype.getBlockHeader = function () {
   console.log(' block/height getBlockHeader')
 
-  return this.request('/block/height')
+  return this.request('/block/height', null, 'GET')
     .then(parseJSON, rej => {
       let res = { "errcode": 0, "msg": "", "result": { "head_block_num": 2845, "head_block_hash": "862934b076f4ff07d1411e5335d119a92d92533718154c7fbacce9f4ea217bc4", "head_block_time": 1536830784, "head_block_delegate": "bottos", "cursor_label": 3928062916, "last_consensus_block_num": 2845, "chain_id": "4b97b92d2c78bcffe95ebd3067565c73a2931b39d5eb7234b11816dcec54761a" } }
-      console.log('res', res)
       return res
     })
     .then((res) => {
@@ -69,7 +79,6 @@ RequestManager.prototype.getBlockHeader = function () {
     })
 }
 
-
 /**
  * This callback type is called `requestAbiCallback`.
  * @callback requestAbiCallback
@@ -83,18 +92,7 @@ RequestManager.prototype.getBlockHeader = function () {
  */
 RequestManager.prototype.getAbi = function (contract, cb) {
   const url = '/contract/abi'
-  return this.request(url, { contract })
-  .then(parseJSON)
-  .then((res) => {
-    if (res.errcode == '0') {
-      const abiJSON = res.result
-      const abi = JSON.parse(abiJSON)
-      cb(abi)
-    }
-  })
-  .catch((err) => {
-    cb(Abi)
-  })
+  return this.request(url, { contract }).then(parseJSON)
 }
 
 /**
@@ -107,7 +105,7 @@ RequestManager.prototype.getAbi = function (contract, cb) {
 RequestManager.prototype.register = function (account, keys, referrer) {
   return this.getBlockHeader()
     .then((blockHeader) => {
-      console.log('blockHeader', blockHeader)
+      // console.log('blockHeader', blockHeader)
       let url = '/transaction/send'
       
       let fetchTemplate = registerParam(account, keys, blockHeader, referrer)

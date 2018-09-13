@@ -3,7 +3,6 @@ const {BasicPack} = require('bottos-js-msgpack')
 const Abi = require('../Abi.js')
 const { messageProtoEncode } = require('../lib/proto/index')
 
-console.log('BasicPack', BasicPack)
 const basicType = ['string', 'uint8', 'uint16', 'uint32', 'uint64', 'uint256']
 
 /**
@@ -69,7 +68,6 @@ function _packParamToArr(name, param, structs) {
 
   const keys = Object.keys(fields)
 
-  console.log('BasicPack', BasicPack)
   var array = Array.from(BasicPack.PackArraySize(keys.length))
 
   // console.log('array', array);

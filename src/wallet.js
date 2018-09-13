@@ -1,6 +1,5 @@
 const BTCrypto = require('bottos-crypto-js');
 const keystore = BTCrypto.keystore
-console.log('keystore', keystore)
 
 /**
  * 
@@ -57,12 +56,20 @@ Wallet.prototype.createKeystore = function (params) {
  */
 Wallet.prototype.recoverKeystore = keystore.recover.bind(keystore)
 
-Wallet.prototype.signTransaction = function() {
+/**
+ * private method
+ */
+// Wallet.prototype.signTransaction = function() {
 
-}
+// }
 
-Wallet.prototype.sendTransaction = function() {
-
+Wallet.prototype.sendTransaction = function(param) {
+  // {
+  //   from: '',
+  //   to: '',
+  //   token_type,
+  //   price,
+  // }
 }
 
 module.exports = Wallet
