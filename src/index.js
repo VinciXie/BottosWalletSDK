@@ -1,12 +1,15 @@
 const BTCrypto = require('bottos-crypto-js');
+const msgpack = require('bottos-js-msgpack');
+
 
 const RequestManager = require('./requestmanager')
 const Wallet = require('./wallet')
 
 console.log('BTCrypto', BTCrypto);
+console.log('msgpack', msgpack);
 
 const defaultConfig = {
-  baseUrl: '127.0.0.1:8689',
+  baseUrl: 'http://127.0.0.1:8689',
   version: 'v1' // version
 }
 
@@ -19,10 +22,13 @@ function SDK(config = defaultConfig) {
 const sdk = new SDK()
 console.log('sdk', sdk);
 
+
 function test() {
   
   const keys = sdk.wallet.createKeys()
   console.log('公私钥对 keys: ', keys)
+
+  const account = 'adfa'
   
   // const keystoreParam = {
   //   account: 'adfa',
@@ -35,8 +41,11 @@ function test() {
   // const pk = sdk.wallet.recoverKeystore(keystoreParam.password, keystore)
   // console.log('pk: ', pk)
 
-  const account = sdk.wallet.createAccount()
-  console.log('account', account)
+  sdk.wallet.createAccount(account, keys)
+    .then(res => {
+      console.log('register res: ', res)
+      return res
+    })
 
 }
 

@@ -7,7 +7,8 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "bottos-crypto-js": "^1.0.14"
+    "bottos-crypto-js": "^1.0.14",
+    "bottos-js-msgpack": "^1.0.1"
   },
   "devDependencies": {
     "ts-loader": "^5.1.0",

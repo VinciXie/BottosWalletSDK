@@ -12,10 +12,13 @@ function Wallet(_requestManager) {
 
 /**
  * register account on chain
+ * @param {string} account - account
+ * @param {Object} keys - Public and private key pair
+ * @param {string} referrer - referrer
  */
-Wallet.prototype.createAccount = function() {
-  console.log('this', this)
-  // this._requestManager.register()
+Wallet.prototype.createAccount = function (account, keys, referrer) {
+  // console.log('this', this)
+  return this._requestManager.register(account, keys, referrer)
 }
 
 /**
